@@ -2,4 +2,14 @@
 
 {% block content%}
 
+    {% for book in books %}
+    <div class="card" style="width: 18rem;">
+  <img src="{{book.image.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{book.title}}</h5>
+    <p class="card-text">{{book.opinion|truncatewords:30}}</p>
+    <a href="{% url 'book details' book.id %}" class="btn btn-primary">Details</a>
+  </div>
+</div>
+{% endfor %}
 {% endblock %}
