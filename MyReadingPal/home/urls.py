@@ -1,7 +1,7 @@
 from django.urls import path
 
 from MyReadingPal.home.views import home, register_page, login_page, logout_user, book_lists_page, my_book_list, \
-    book_lists_details
+    book_lists_details, who_likes_me_page
 
 urlpatterns = (
     path('', home, name='home'),
@@ -11,4 +11,6 @@ urlpatterns = (
     path('booklists/', book_lists_page, name='book lists'),
     path('booklists/<int:pk>',book_lists_details, name='book lists details'),
     path('mybooklist/', my_book_list, name='my book list'),
+    path('wholikesme/', who_likes_me_page, name='who likes me'),
+
 )

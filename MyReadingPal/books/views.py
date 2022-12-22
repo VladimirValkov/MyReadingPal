@@ -1,9 +1,14 @@
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect
 
 from MyReadingPal.books.forms import BookForm, DeletedBookForm
 from MyReadingPal.books.models import Book
 
+
+
+def check_owner(current_user_id, book_id):
+    return Book.objects.get(id=book_id).creator_id == current_user_id
 
 @login_required(login_url='login')
 def add_book(request):
@@ -26,6 +31,9 @@ def add_book(request):
 def book_details(request, pk):
     book = Book.objects.get(pk=pk)
     can_edit = False
+    image = '/media/images/default_book.png'
+    if book.image.name is not '':
+        image = book.image.url
     if request.user.id == book.creator_id:
         can_edit = True
     context = {
@@ -33,7 +41,7 @@ def book_details(request, pk):
         'type': book.type,
         'author': book.author,
         'opinion': book.opinion,
-        'image': book.image.url ,
+        'image': image,
         'can_edit': can_edit,
         'id': pk,
     }
@@ -43,33 +51,39 @@ def book_details(request, pk):
 
 @login_required(login_url='login')
 def edit_book(request, pk):
-    book = Book.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = BookForm(request.POST, instance=book)
-        if form.is_valid():
-            form.save()
-            return redirect('my book list')
+    if check_owner(request.user.id, pk):
+        book = Book.objects.get(pk=pk)
+        if request.method == 'POST':
+            form = BookForm(request.POST, request.FILES, instance=book)
+            if form.is_valid():
+                form.save()
+                return redirect('my book list')
+        else:
+            form = BookForm(instance=book)
+
+        context = {
+            'form': form
+        }
+
+        return render(request, 'edit-book.html', context)
     else:
-        form = BookForm(instance=book)
-
-    context = {
-        'form': form
-    }
-
-    return render(request, 'edit-book.html', context)
+        raise Http404
 
 
 @login_required(login_url='login')
 def delete_book(request, pk):
-    book = Book.objects.get(pk=pk)
-    if request.method == 'POST':
-        book.delete()
-        return redirect('my book list')
+    if check_owner(request.user.id, pk):
+        book = Book.objects.get(pk=pk)
+        if request.method == 'POST':
+            book.delete()
+            return redirect('my book list')
+        else:
+            form = DeletedBookForm(instance=book)
+
+        context = {
+            'form': form
+        }
+
+        return render(request, 'delete-book.html', context)
     else:
-        form = DeletedBookForm(instance=book)
-
-    context = {
-        'form': form
-    }
-
-    return render(request, 'delete-book.html', context)
+        raise Http404

@@ -34,7 +34,10 @@ def book_lists_page(request):
     return render(request, 'book-lists.html', context)
 
 def book_lists_details(request, pk):
-    books = Book.objects.filter(creator_id=pk)
+    if request.user.id == pk:
+        books = Book.objects.filter(creator_id=pk)
+    else:
+        books = Book.objects.filter(creator_id=pk).filter(is_public=True)
     user = User.objects.get(id=pk)
     userlikes = UserLikes.objects.filter(liker_user=request.user.id).filter(liked_user=pk)
     is_liked = len(userlikes) > 0
@@ -117,3 +120,16 @@ def login_page(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+@login_required(login_url='login')
+def who_likes_me_page(request):
+    likers = UserLikes.objects.filter(liked_user=request.user.id)
+    users = []
+    for liker in likers:
+        users.append(User.objects.get(id=liker.liker_user))
+
+    context = {
+        'users': users
+    }
+
+    return render(request, 'who-likes-me.html', context)
