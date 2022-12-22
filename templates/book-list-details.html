@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content%}
+
+    <h1>{{user_data.username}}'s List</h1>
+     {% if request.user.is_authenticated %}
+        {% if is_liked %}
+         <form method="POST" action="">
+             {% csrf_token %}
+                <input  name="dislike" hidden="hidden" value="1">
+                <button type="submit" class="btn btn-warning">Dislike this list</button>
+            </form>
+        {% else %}
+            <form method="POST" action="">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Like this list</button>
+            </form>
+        {% endif %}
+
+    {% endif %}
+    {% for book in books %}
+    <div class="card" style="width: 18rem;">
+  <img src="{{book.image.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{book.title}}</h5>
+    <p class="card-text">{{book.opinion|truncatewords:30}}</p>
+    <a href="{% url 'book details' book.id %}" class="btn btn-primary">Details</a>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

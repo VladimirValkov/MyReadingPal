@@ -6,4 +6,8 @@
     <p>{{type}}</p>
     <p>{{author}}</p>
     <p>{{opinion}}</p>
+    {% if can_edit %}
+    <a type="button" href="{% url 'edit book' id %}" class="btn btn-primary">Edit</a>
+    <a type="button" href="{% url 'delete book' id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
 {% endblock %}

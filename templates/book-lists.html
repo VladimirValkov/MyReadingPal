@@ -2,4 +2,18 @@
 
 {% block content%}
 
+
+{% for list in lists %}
+<div class="card w-50">
+  <div class="card-body">
+    <h5 class="card-title">{{list.username}}'s BookList</h5>
+    <p class="card-text">Likes: {{list.likes}}</p>
+    <p class="card-text">Books Count: {{list.books_count}}</p>
+    <a href="{% url 'book lists details' list.id %}" class="btn btn-primary">Details</a>
+  </div>
+</div>
+{% endfor %}
+
+
+
 {% endblock %}

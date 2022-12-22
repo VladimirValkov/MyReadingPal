@@ -1,3 +1,7 @@
+from django.contrib.auth.models import User
 from django.db import models
 
-# Create your models here.
+
+class UserLikes(models.Model):
+    liked_user = models.IntegerField()
+    liker_user = models.IntegerField()

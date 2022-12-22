@@ -9,3 +9,10 @@ class BookForm(ModelForm):
         fields = '__all__'
         exclude = ['creator_id']
 
+
+class DeletedBookForm(BookForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for (_, field) in self.fields.items():
+            field.widget.attrs['disabled'] = 'disabled'
+
