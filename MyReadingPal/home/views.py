@@ -64,7 +64,8 @@ def book_lists_details(request, pk):
 def my_book_list(request):
     books = Book.objects.filter(creator_id=request.user.id)
     context = {
-        'books': books
+        'books': books,
+        'book_len': len(books)
     }
     return render(request, 'my-book-list.html', context)
 
