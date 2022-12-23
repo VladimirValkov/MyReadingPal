@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+from MyReadingPal.home.models import UserLikes
+
+admin.site.register(UserLikes)
